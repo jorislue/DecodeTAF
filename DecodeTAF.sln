@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.20827.3
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DecodeTAF", "DecodeTAF.vcxproj", "{BE184AF2-F86A-46E9-8C97-B197496A7CB6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LocalTAF", "..\LocalTAF\LocalTAF.vcxproj", "{53183994-3768-48C0-94A3-1CA88DCCF190}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ftpTAF", "ftpTAF\ftpTAF.vcxproj", "{16F7261A-98FB-4846-8FC9-453CB511915B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{53183994-3768-48C0-94A3-1CA88DCCF190}.Debug|Win32.Build.0 = Debug|Win32
 		{53183994-3768-48C0-94A3-1CA88DCCF190}.Release|Win32.ActiveCfg = Release|Win32
 		{53183994-3768-48C0-94A3-1CA88DCCF190}.Release|Win32.Build.0 = Release|Win32
+		{16F7261A-98FB-4846-8FC9-453CB511915B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{16F7261A-98FB-4846-8FC9-453CB511915B}.Debug|Win32.Build.0 = Debug|Win32
+		{16F7261A-98FB-4846-8FC9-453CB511915B}.Release|Win32.ActiveCfg = Release|Win32
+		{16F7261A-98FB-4846-8FC9-453CB511915B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
