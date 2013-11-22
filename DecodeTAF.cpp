@@ -23,7 +23,7 @@ void main(){
 	HINSTANCE hinstLib;
 	MYPROC ProcAdd;
 	BOOL fFreeResult, fRunTimeLinkSuccess = FALSE;
-
+	//Commit TEST
 	const int max_num = 100;
 	char name[max_num] = "";
 	char path[max_num] = ":";
