@@ -1,10 +1,9 @@
 #include "DecodeTAF.h"
-#include <iostream>
-
 #include <windows.h> 
+#include <algorithm>
 //#include "DecodeDLL.h"
 //http://msdn.microsoft.com/de-de/library/ms235636(v=vs.90).aspx
-using namespace std;
+
 
 typedef void(__cdecl *MYPROC)(char*, char*);
 
@@ -18,8 +17,52 @@ DecodeTAF::~DecodeTAF(void)
 {
 }
 
+
+string* DecodeTAF::search_icoa_code(string _code)
+{
+
+	//fstream datei("C:/Users/Christopher/Desktop/icao_codes.txt", ios::in);
+	ifstream f("C:/Users/Christopher/Desktop/icao_codes.txt");
+	string zeile;
+	string file="";
+	string codes[4045];
+	int count = 0;
+	int first = 0;
+	while (!f.eof())
+	{
+		getline(f, zeile);
+		if (first == 0)
+			cout <<"   "<< zeile << endl;
+
+		if (zeile.find(_code) != std::string::npos)
+		{
+			
+			cout << count << ": " <<zeile << endl;
+			//codes[count] = zeile.substr(4,4);
+			zeile.copy(codes, count, 4);
+			cout << "Code: " <<codes[count] << endl;
+			count++;
+		}
+			
+		file += zeile;
+		first++;
+	}
+	//f >> zeile;
+	//cout << file;
+	for (int i = 0; i++; i < count)
+		cout << codes[i] << endl;
+	//string tmp_array[200];
+	
+	return codes;
+}
+
+
+
+
 void main(){
 
+	
+	DecodeTAF* _decode = new DecodeTAF();
 	HINSTANCE hinstLib;
 	MYPROC ProcAdd;
 	BOOL fFreeResult, fRunTimeLinkSuccess = FALSE;
@@ -28,6 +71,35 @@ void main(){
 	char name[max_num] = "";
 	char path[max_num] = ":";
 	char both[max_num] = "";
+	string _input;
+	string in;
+	string* icode;
+	int number;
+	while (1)
+	{
+		cout << "City: ";
+		/*getline(cin,_input);
+
+		if (_input!="")
+		{
+		if (_input == "City")
+		{*/
+		getline(cin, in);
+		transform(in.begin(), in.end(), in.begin(), ::toupper);
+		cout << in << endl;
+		icode = _decode->search_icoa_code(in);
+		cout << "Number: ";
+		//cin >> number;
+		for (number = 0; number++; number < 10)
+		{
+			cout << icode[number] << endl;
+		}
+				
+			//}
+		//}
+
+
+	}
 	cout << "Path: ";
 	cin >> path;
 	cout << "File: ";
