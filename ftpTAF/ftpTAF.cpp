@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <iostream>
 #include <string>
+#include <curl.h>
 using namespace std;
 
 #define EOF (-1)
