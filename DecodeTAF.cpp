@@ -42,7 +42,7 @@ string* DecodeTAF::search_icoa_code(string _code)
 			cout << count << ": " <<zeile << endl;
 			codes[count] = zeile.substr(4,4);
 			cout << "Code: " <<codes[count] << endl;
-			count++;
+			++count;
 		}
 			
 		file += zeile;
