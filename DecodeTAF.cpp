@@ -6,6 +6,7 @@
 
 
 typedef void(__cdecl *MYPROC)(char*, char*);
+typedef void(__cdecl *MYPROC2)(char*);
 
 DecodeTAF::DecodeTAF(void)
 {
@@ -38,8 +39,7 @@ string* DecodeTAF::search_icoa_code(string _code)
 		{
 			
 			cout << count << ": " <<zeile << endl;
-			//codes[count] = zeile.substr(4,4);
-			zeile.copy(codes, count, 4);
+			codes[count] = zeile.substr(4,4);
 			cout << "Code: " <<codes[count] << endl;
 			count++;
 		}
@@ -65,6 +65,7 @@ void main(){
 	DecodeTAF* _decode = new DecodeTAF();
 	HINSTANCE hinstLib;
 	MYPROC ProcAdd;
+	MYPROC2 ProcFtp;
 	BOOL fFreeResult, fRunTimeLinkSuccess = FALSE;
 	//Commit TEST
 	const int max_num = 100;
@@ -75,6 +76,24 @@ void main(){
 	string in;
 	string* icode;
 	int number;
+
+	HINSTANCE fptLib = LoadLibrary(TEXT("ftpTAF.dll"));
+	{
+		MYPROC2 ProcFtp = (MYPROC2)GetProcAddress(fptLib, "openFtpTAF");
+
+		// If the function address is valid, call the function.
+
+		if (NULL != ProcFtp)
+		{
+			char* station = "A302";
+			fRunTimeLinkSuccess = TRUE;
+			(ProcFtp)(station);
+		}
+		// Free the DLL module.
+
+		fFreeResult = FreeLibrary(fptLib);
+	}
+
 	while (1)
 	{
 		cout << "City: ";
@@ -131,6 +150,7 @@ void main(){
 
 		fFreeResult = FreeLibrary(hinstLib);
 	}
+
 
 	// If unable to call the DLL function, use an alternative.
 	if (!fRunTimeLinkSuccess)
