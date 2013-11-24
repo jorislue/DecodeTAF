@@ -20,14 +20,14 @@ DecodeTAF::~DecodeTAF(void)
 }
 
 
-string* DecodeTAF::search_icoa_code(string _code)
+string* DecodeTAF::search_icoa_code(string _code, string* codes)
 {
 
 	//fstream datei("C:/Users/Christopher/Desktop/icao_codes.txt", ios::in);
 	ifstream f("C:/Users/Christopher/Desktop/icao_codes.txt");
 	string zeile;
 	string file="";
-	string codes[4045];
+	
 	int count = 0;
 	int first = 0;
 	while (!f.eof())
@@ -42,17 +42,15 @@ string* DecodeTAF::search_icoa_code(string _code)
 			cout << count << ": " <<zeile << endl;
 			codes[count] = zeile.substr(4,4);
 			cout << "Code: " <<codes[count] << endl;
-			++count;
+			count++;
 		}
 			
 		file += zeile;
 		first++;
 	}
-	//f >> zeile;
-	//cout << file;
-	for (int i = 0; i++; i < count)
-		cout << codes[i] << endl;
-	//string tmp_array[200];
+	
+	//for (int i = 0; i < count;i++)
+	//	cout << codes[i] << endl;
 	
 	return codes;
 }
@@ -68,25 +66,24 @@ void main(){
 	string in;
 	string* icode;
 	int number;
-
+	string _codes[4045];
 	while (1)
 	{
 		cout << "Please Type in the airport or city for a weather report.\n";
 		cout << "City: ";
 		getline(cin, in);
+		//cin >> in;
 		//Test for typing in the airport code
 		cout << callFromFTP(in);
 		transform(in.begin(), in.end(), in.begin(), ::toupper);
 		cout << in << endl;
-		icode = _decode->search_icoa_code(in);
+		icode = _decode->search_icoa_code(in,_codes);
 		cout << "Number: ";
-		for (number = 0; number++; number < 10)
-		{
-			cout << icode[number] << endl;
-		}
-
+		cin >> number;
+		cout << "Inhalt: " <<icode[number] << endl;
 		cout << "Download latest forecast via FTP? (default)";
-			cout << in << endl;
+		cin.ignore();
+			//cout << in << endl;
 	}
 
 	system("pause");

@@ -11,7 +11,7 @@ public:
 	//Main changes
 	DecodeTAF(void);
 	~DecodeTAF(void);
-	string* search_icoa_code(string);
+	string* search_icoa_code(string,string*);
 
 };
 
