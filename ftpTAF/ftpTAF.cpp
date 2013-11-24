@@ -1,5 +1,4 @@
 
-
 //#define _CRT_SECURE_NO_WARNINGS
 #include <windows.h>
 #include <iostream>
@@ -24,14 +23,19 @@ extern "C" {          // we need to export the C interface
 	/*
 	char* a und b stehen derzeit für den string mit dateiname
 	*/
-	__declspec(dllexport) int __cdecl openFtpTAF(char* stationCode)
+
+	__declspec(dllexport) char*__cdecl openFtpTAF(char* stationCode)
 	{
 
 		//Station Link: ftp://tgftp.nws.noaa.gov/data/observations/metar/stations/
 		
-		
-		std::string stationCodeStr = stationCode + string(".txt");
+
 		std::string result;
+		string stringstation = stationCode;
+		string fileending = ".TXT";
+		string destURL = "ftp://tgftp.nws.noaa.gov/data/observations/metar/stations/" + stringstation + fileending;
+		
+		char* carrDestURL = const_cast<char*>(destURL.c_str());
 		CURL *curl;
 		CURLcode res;
 
@@ -39,7 +43,7 @@ extern "C" {          // we need to export the C interface
 
 		curl = curl_easy_init();
 		if (curl) {
-			curl_easy_setopt(curl, CURLOPT_URL, "ftp://tgftp.nws.noaa.gov/data/observations/metar/stations/A302.TXT");
+			curl_easy_setopt(curl, CURLOPT_URL, carrDestURL);
 			/* Define our callback to get called when there's data to be written */
 			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, my_write);
 			/* Set a pointer to our struct to pass to the callback */
@@ -61,7 +65,9 @@ extern "C" {          // we need to export the C interface
 		}
 			curl_global_cleanup();
 
-		return res;
+			cout << result;
+			char* CArrResult = const_cast<char*>(result.c_str());
+			return CArrResult;
 	}
 
 

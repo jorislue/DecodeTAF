@@ -85,7 +85,7 @@ void main(){
 
 		if (NULL != ProcFtp)
 		{
-			char* station = "A302";
+			char station[5] = "A302";
 			fRunTimeLinkSuccess = TRUE;
 			(ProcFtp)(station);
 		}
