@@ -6,7 +6,8 @@
 
 
 typedef void(__cdecl *MYPROC)(char*, char*);
-typedef void(__cdecl *MYPROC2)(char*);
+typedef char* (__cdecl *MYPROC2)(char*,char*);
+static char reportData[150];
 
 DecodeTAF::DecodeTAF(void)
 {
@@ -55,7 +56,7 @@ string* DecodeTAF::search_icoa_code(string _code)
 	
 	return codes;
 }
-
+string callFromFTP(string stationcode);
 
 
 
@@ -63,62 +64,72 @@ void main(){
 
 	
 	DecodeTAF* _decode = new DecodeTAF();
-	HINSTANCE hinstLib;
-	MYPROC ProcAdd;
-	MYPROC2 ProcFtp;
-	BOOL fFreeResult, fRunTimeLinkSuccess = FALSE;
-	//Commit TEST
-	const int max_num = 100;
-	char name[max_num] = "";
-	char path[max_num] = ":";
-	char both[max_num] = "";
 	string _input;
 	string in;
 	string* icode;
 	int number;
 
+	while (1)
+	{
+		cout << "Please Type in the airport or city for a weather report.\n";
+		cout << "City: ";
+		getline(cin, in);
+		//Test for typing in the airport code
+		cout << callFromFTP(in);
+		transform(in.begin(), in.end(), in.begin(), ::toupper);
+		cout << in << endl;
+		icode = _decode->search_icoa_code(in);
+		cout << "Number: ";
+		for (number = 0; number++; number < 10)
+		{
+			cout << icode[number] << endl;
+		}
+
+		cout << "Download latest forecast via FTP? (default)";
+			cout << in << endl;
+	}
+
+	system("pause");
+}
+
+
+
+string callFromFTP(string stationcode){
+
+	MYPROC2 ProcFtp;
+	string report;
+	BOOL fFreeResult,fRunTimeLinkSuccess = false;
 	HINSTANCE fptLib = LoadLibrary(TEXT("ftpTAF.dll"));
 	{
-		MYPROC2 ProcFtp = (MYPROC2)GetProcAddress(fptLib, "openFtpTAF");
+		ProcFtp = (MYPROC2)GetProcAddress(fptLib, "openFtpTAF");
 
 		// If the function address is valid, call the function.
 
 		if (NULL != ProcFtp)
 		{
-			char station[5] = "A302";
+			char *station = const_cast<char*>(stationcode.c_str());;
 			fRunTimeLinkSuccess = TRUE;
-			(ProcFtp)(station);
+			report = string((ProcFtp)(station,reportData));
 		}
 		// Free the DLL module.
 
 		fFreeResult = FreeLibrary(fptLib);
 	}
+	cout << report;
+	return report;
 
-	while (1)
-	{
-		cout << "City: ";
-		/*getline(cin,_input);
+}
 
-		if (_input!="")
-		{
-		if (_input == "City")
-		{*/
-		getline(cin, in);
-		transform(in.begin(), in.end(), in.begin(), ::toupper);
-		cout << in << endl;
-		icode = _decode->search_icoa_code(in);
-		cout << "Number: ";
-		//cin >> number;
-		for (number = 0; number++; number < 10)
-		{
-			cout << icode[number] << endl;
-		}
-				
-			//}
-		//}
+string callFromLocalFile(){
 
+	BOOL fFreeResult, fRunTimeLinkSuccess = FALSE;
+	MYPROC ProcAdd;
+	HINSTANCE hinstLib;
+	const int max_num = 100;
+	char name[max_num] = "";
+	char path[max_num] = ":";
+	char both[max_num] = "";
 
-	}
 	cout << "Path: ";
 	cin >> path;
 	cout << "File: ";
@@ -130,6 +141,7 @@ void main(){
 	*/
 	cout << "Path: " << path << endl;
 	cout << "File: " << name << endl;
+
 
 	hinstLib = LoadLibrary(TEXT("LocalTAF.dll"));
 
@@ -156,7 +168,6 @@ void main(){
 	if (!fRunTimeLinkSuccess)
 		printf("Message printed from executable\n");
 
-	cout<<"DecodeTAF Console Application"<<endl;
-	
-	system("pause");
+	cout << "DecodeTAF Console Application" << endl;
+	return NULL;
 }

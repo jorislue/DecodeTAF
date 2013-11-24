@@ -24,7 +24,7 @@ extern "C" {          // we need to export the C interface
 	char* a und b stehen derzeit für den string mit dateiname
 	*/
 
-	__declspec(dllexport) char*__cdecl openFtpTAF(char* stationCode)
+	__declspec(dllexport) char*__cdecl openFtpTAF(char* stationCode, char* destination)
 	{
 
 		//Station Link: ftp://tgftp.nws.noaa.gov/data/observations/metar/stations/
@@ -50,10 +50,10 @@ extern "C" {          // we need to export the C interface
 			curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result);
 
 			/* Switch on full protocol/debug output */
-			curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-
+			//curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+			cout << "fetching weather data, please wait...";
 			res = curl_easy_perform(curl);
-			cout << res;
+			//cout << res;
 
 			/* always cleanup */
 			curl_easy_cleanup(curl);
@@ -65,9 +65,22 @@ extern "C" {          // we need to export the C interface
 		}
 			curl_global_cleanup();
 
+			//cout << result;
+		//	char* cResult = const_cast<char*>(result.c_str());
+			int i = 0;
+			cout << "\nreal output:\n";
 			cout << result;
-			char* CArrResult = const_cast<char*>(result.c_str());
-			return CArrResult;
+			cout << "\n";
+			char* test;
+			test= static_cast<char*>(result.c_str);
+			for (i = 0; i++; test[i] != '/0')
+				cout << test[i];
+			cout << test;
+			cout << "before return:\n";
+			cout << destination;
+			cout << "\n";
+			cout << "After return: \n";
+			return destination;
 	}
 
 
