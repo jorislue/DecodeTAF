@@ -17,11 +17,16 @@ public:
 	void setftppath(string);
 	string getlocalpath();
 	string getftppath();
-	string callFromLocalFile();
+	void callFromLocalFile(string);
 	string callFromFTP(string);
+	void setlocal_file(string);
+	string getlocal_file();
 private:
-	string _codes[4045];
+	string local_file;
 	string _city;
 	string localpath;
+	char* localfile;
+	string _localfile;
+	
 };
 

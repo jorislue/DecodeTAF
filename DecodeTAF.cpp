@@ -5,13 +5,14 @@
 //http://msdn.microsoft.com/de-de/library/ms235636(v=vs.90).aspx
 
 
-typedef void(__cdecl *MYPROC)(char*, char*);
+typedef char*(__cdecl *MYPROC)(char*);
 typedef char* (__cdecl *MYPROC2)(char*,char*);
 static char reportData[150];
 
 DecodeTAF::DecodeTAF(void)
 {
-	//This is a change test
+	this->localpath = "C:/Users/Christopher/Downloads/";
+
 }
 
 
@@ -24,6 +25,7 @@ void DecodeTAF::setlocalpath(string _path)
 	this->localpath = _path;
 }
 
+string _codes[4045]={""};
 void DecodeTAF::search_icoa_code()
 {
 	for (int i = 0; i < 4045; i++)
@@ -73,7 +75,7 @@ void DecodeTAF::search_icoa_code()
 	cout << callFromFTP(_city);
 	
 	cout << "Inhalt: " << _codes[number] << endl;
-	  _codes[number];
+	callFromLocalFile(_codes[number]);
 }
 string callFromFTP(string stationcode);
 
@@ -85,11 +87,10 @@ void main(){
 	DecodeTAF* _decode = new DecodeTAF();
 	string _input;
 	string in;
-	string icode;
 	string path;
 	string _option = "";
 	int number;
-	
+	string icao;
 	while (1)
 	{
 		
@@ -116,7 +117,16 @@ void main(){
 			}
 			else if (_option == "icao")
 			{
-				
+				cin.ignore();
+				cout << "File name: e.g LOWS" << endl;
+				while (cin >> icao && icao.length() != 4)
+				{
+					cout << "Eingabe hat keine 4 zeichen! " << endl;
+					cin.clear();
+					cin.ignore();
+				}
+
+				_decode->callFromLocalFile(icao);
 			}
 			else if (_option == "search")
 			{
@@ -125,8 +135,7 @@ void main(){
 			}
 
 
-			
-			cout << "Code in main: " << icode << endl;
+		
 
 			cout << "Download latest forecast via FTP? (default)" << endl;
 			
@@ -171,28 +180,32 @@ string DecodeTAF::callFromFTP(string stationcode){
 
 }
 
-string callFromLocalFile(){
+void DecodeTAF::callFromLocalFile(string file){
 
 	BOOL fFreeResult, fRunTimeLinkSuccess = FALSE;
 	MYPROC ProcAdd;
 	HINSTANCE hinstLib;
 	const int max_num = 100;
-	char name[max_num] = "";
-	char path[max_num] = ":";
-	char both[max_num] = "";
+	char _file[100] = { "" }; 
+	char _localpath[100] = { "" };
+	cout << "Erstes File " << file << endl;
+	for (int j = 0; j < this->localpath.length(); j++)
+		_localpath[j] = this->localpath[j];
 
-	cout << "Path: ";
-	cin >> path;
-	cout << "File: ";
-	cin >> name;
+	cout << "Path: " << _localpath << endl;
 
 
-	strcat_s(name, max_num, ".txt");
-	/*strcat_s(path, max_num, name);
-	*/
-	cout << "Path: " << path << endl;
-	cout << "File: " << name << endl;
+	for (int k = 0; k < file.length(); k++)
+		_file[k] = file[k];
 
+	cout << "File: " << _file << endl;
+
+	strcat_s(_file, max_num, ".txt");
+	strcat_s(_localpath, 100, _file);
+	
+	cout << "Both: " << _localpath << endl;
+	
+	system("pause");
 
 	hinstLib = LoadLibrary(TEXT("LocalTAF.dll"));
 
@@ -207,10 +220,10 @@ string callFromLocalFile(){
 		if (NULL != ProcAdd)
 		{
 			fRunTimeLinkSuccess = TRUE;
-			(ProcAdd)(path, name);
+			this->localfile = ((ProcAdd)(_localpath));
 		}
 		// Free the DLL module.
-
+		this->_localfile = this->localfile;
 		fFreeResult = FreeLibrary(hinstLib);
 	}
 
@@ -220,5 +233,5 @@ string callFromLocalFile(){
 		printf("Message printed from executable\n");
 
 	cout << "DecodeTAF Console Application" << endl;
-	return NULL;
+	
 }
