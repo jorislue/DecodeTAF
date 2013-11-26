@@ -19,15 +19,28 @@ DecodeTAF::~DecodeTAF(void)
 {
 }
 
-
-string* DecodeTAF::search_icoa_code(string _code, string* codes)
+void DecodeTAF::setlocalpath(string _path)
 {
+	this->localpath = _path;
+}
+
+void DecodeTAF::search_icoa_code()
+{
+	for (int i = 0; i < 4045; i++)
+		_codes[i] = "";
+
+	cout << "Please Type in the airport or city for a weather report.\n";
+	cout << "City: ";
+	getline(cin, _city);
+	
+	transform(_city.begin(), _city.end(), _city.begin(), ::toupper);
+	cout << _city << endl;
 
 	//fstream datei("C:/Users/Christopher/Desktop/icao_codes.txt", ios::in);
 	ifstream f("C:/Users/Christopher/Desktop/icao_codes.txt");
 	string zeile;
 	string file="";
-	
+	int number=0;
 	int count = 0;
 	int first = 0;
 	while (!f.eof())
@@ -36,12 +49,11 @@ string* DecodeTAF::search_icoa_code(string _code, string* codes)
 		if (first == 0)
 			cout <<"   "<< zeile << endl;
 
-		if (zeile.find(_code) != std::string::npos)
-		{
-			
+		if (zeile.find(_city) != std::string::npos)
+		{			
 			cout << count << ": " <<zeile << endl;
-			codes[count] = zeile.substr(4,4);
-			cout << "Code: " <<codes[count] << endl;
+			_codes[count] = zeile.substr(4,4);
+			cout << "Code: " <<_codes[count] << endl;
 			count++;
 		}
 			
@@ -49,10 +61,19 @@ string* DecodeTAF::search_icoa_code(string _code, string* codes)
 		first++;
 	}
 	
-	//for (int i = 0; i < count;i++)
-	//	cout << codes[i] << endl;
+
+	while ((cout << "Number? ")
+		&& (!(cin >> number) || number < 0 || number > 4046)) {
+			cout << "That's not a number between 0 and 4046; ";
+			cin.clear();
+			cin.ignore();
+	}
+
+	cin.ignore();
+	cout << callFromFTP(_city);
 	
-	return codes;
+	cout << "Inhalt: " << _codes[number] << endl;
+	  _codes[number];
 }
 string callFromFTP(string stationcode);
 
@@ -60,30 +81,63 @@ string callFromFTP(string stationcode);
 
 void main(){
 
-	
+	string _method = "";
 	DecodeTAF* _decode = new DecodeTAF();
 	string _input;
 	string in;
-	string* icode;
+	string icode;
+	string path;
+	string _option = "";
 	int number;
-	string _codes[4045];
+	
 	while (1)
 	{
-		cout << "Please Type in the airport or city for a weather report.\n";
-		cout << "City: ";
-		getline(cin, in);
-		//cin >> in;
-		//Test for typing in the airport code
-		cout << callFromFTP(in);
-		transform(in.begin(), in.end(), in.begin(), ::toupper);
-		cout << in << endl;
-		icode = _decode->search_icoa_code(in,_codes);
-		cout << "Number: ";
-		cin >> number;
-		cout << "Inhalt: " <<icode[number] << endl;
-		cout << "Download latest forecast via FTP? (default)";
+		
+		cout << "Enter ftp or local " << endl;
+		cin >> _method;
+		transform(_method.begin(), _method.end(), _method.begin(), ::tolower);
+		cout << _method << endl;
 		cin.ignore();
-			//cout << in << endl;
+		if (_method == "ftp")
+		{
+		
+			cout << "FTP call" << endl;
+		
+		}
+		else if (_method == "local")
+		{
+			cout << "With path you can enter your path to the file." << endl << "With icao you can directly enter the ICAO-code and the file will be opened." << endl << "With search you can search for a specific airport" << endl;
+			cin >> _option;
+			transform(_option.begin(), _option.end(), _option.begin(), ::tolower);
+			if (_option == "path")
+			{
+				cin >> path;
+				_decode->setlocalpath(path);
+			}
+			else if (_option == "icao")
+			{
+				
+			}
+			else if (_option == "search")
+			{
+				cin.ignore();
+				_decode->search_icoa_code();
+			}
+
+
+			
+			cout << "Code in main: " << icode << endl;
+
+			cout << "Download latest forecast via FTP? (default)" << endl;
+			
+		}
+		else
+		{
+			cout << "Wrong Input" << endl;
+		}
+		
+
+		
 	}
 
 	system("pause");
@@ -91,7 +145,7 @@ void main(){
 
 
 
-string callFromFTP(string stationcode){
+string DecodeTAF::callFromFTP(string stationcode){
 
 	MYPROC2 ProcFtp;
 	string report;
