@@ -26,7 +26,9 @@ private:
 	string _city;
 	string localpath;
 	char* localfile;
+	string result_local;
 	string _localfile;
+	
 	
 };
 

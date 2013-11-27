@@ -5,7 +5,7 @@
 //http://msdn.microsoft.com/de-de/library/ms235636(v=vs.90).aspx
 
 
-typedef char*(__cdecl *MYPROC)(char*);
+typedef char*(__cdecl *MYPROC)(char*,char*);
 typedef char* (__cdecl *MYPROC2)(char*,char*);
 static char reportData[150];
 
@@ -20,6 +20,17 @@ DecodeTAF::DecodeTAF(void)
 DecodeTAF::~DecodeTAF(void)
 {
 }
+
+void DecodeTAF::setlocal_file(string _result)
+{
+	this->result_local = _result;
+}
+
+string DecodeTAF::getlocal_file()
+{
+	return this->result_local;
+}
+
 
 void DecodeTAF::setlocalpath(string _path)
 {
@@ -138,7 +149,7 @@ void main(){
 				_decode->search_icoa_code();
 			}
 
-
+			cout << "Result in main(): " << _decode->getlocal_file();
 		
 
 			cout << "Download latest forecast via FTP? (default)" << endl;
@@ -192,6 +203,7 @@ void DecodeTAF::callFromLocalFile(string file){
 	const int max_num = 100;
 	char _file[100] = { "" }; 
 	char _localpath[100] = { "" };
+	char result[600] = { "" };
 	cout << "Erstes File " << file << endl;
 	for (int j = 0; j < this->localpath.length(); j++)
 		_localpath[j] = this->localpath[j];
@@ -224,10 +236,12 @@ void DecodeTAF::callFromLocalFile(string file){
 		if (NULL != ProcAdd)
 		{
 			fRunTimeLinkSuccess = TRUE;
-			this->localfile = ((ProcAdd)(_localpath));
+			this->localfile = ((ProcAdd)(_localpath,result));
 		}
 		// Free the DLL module.
 		this->_localfile = this->localfile;
+		cout << "Result of dll: "<<this->localfile << endl;
+		this->setlocal_file(this->_localfile);
 		fFreeResult = FreeLibrary(hinstLib);
 	}
 
