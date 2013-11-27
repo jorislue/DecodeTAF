@@ -8,14 +8,12 @@
 typedef char*(__cdecl *MYPROC)(char*,char*);
 typedef char* (__cdecl *MYPROC2)(char*,char*);
 static char reportData[150];
-
+string _codes[4045] = { "" };
 
 DecodeTAF::DecodeTAF(void)
 {
 	this->localpath = "C:/Users/Christopher/Downloads/";
-
 }
-
 
 DecodeTAF::~DecodeTAF(void)
 {
@@ -31,14 +29,17 @@ string DecodeTAF::getlocal_file()
 	return this->result_local;
 }
 
-
 void DecodeTAF::setlocalpath(string _path)
 {
 	this->localpath = _path;
 }
 
-string _codes[4045]={""};
-void DecodeTAF::search_icoa_code()
+string DecodeTAF::getlocalpath()
+{
+	return this->localpath;
+}
+
+void DecodeTAF::search_icoa_code(int _variation)
 {
 	for (int i = 0; i < 4045; i++)
 		_codes[i] = "";
@@ -46,35 +47,32 @@ void DecodeTAF::search_icoa_code()
 	cout << "Please Type in the airport or city for a weather report.\n";
 	cout << "City: ";
 	getline(cin, _city);
-	
 	transform(_city.begin(), _city.end(), _city.begin(), ::toupper);
-	cout << _city << endl;
-
-	//fstream datei("C:/Users/Christopher/Desktop/icao_codes.txt", ios::in);
+	
 	ifstream f("C:/Users/Christopher/Desktop/icao_codes.txt");
 	string zeile;
-	string file="";
-	int number=0;
+	string file = "";
+	int number = 0;
 	int count = 0;
 	int first = 0;
 	while (!f.eof())
 	{
 		getline(f, zeile);
 		if (first == 0)
-			cout <<"   "<< zeile << endl;
+			cout << "   " << zeile << endl;
 
 		if (zeile.find(_city) != std::string::npos)
-		{			
-			cout << count << ": " <<zeile << endl;
-			_codes[count] = zeile.substr(4,4);
-			cout << "Code: " <<_codes[count] << endl;
+		{
+			cout << count << ": " << zeile << endl;
+			_codes[count] = zeile.substr(4, 4);
+			cout << "Code: " << _codes[count] << endl;
 			count++;
 		}
-			
+
 		file += zeile;
 		first++;
 	}
-	
+
 
 	while ((cout << "Number? ")
 		&& (!(cin >> number) || number < 0 || number > 4046)) {
@@ -84,10 +82,26 @@ void DecodeTAF::search_icoa_code()
 	}
 
 	cin.ignore();
-	cout << callFromFTP(_city);
-	
-	cout << "Inhalt: " << _codes[number] << endl;
-	callFromLocalFile(_codes[number]);
+
+	if (_codes[number] == "")
+	{
+		cout << "No airport chosen!" << endl;
+	}
+	else
+	{
+		if (_variation == 1)
+		{
+			cout << callFromFTP(_city);
+		}
+		else if (_variation == 2)
+		{
+			callFromLocalFile(_codes[number]);
+		}
+		else
+		{
+			cout << "No method choosen" << endl;
+		}
+	}
 }
 
 
@@ -101,7 +115,7 @@ void main(){
 	string in;
 	string path;
 	string _option = "";
-	int number;
+	int _number;
 	string icao;
 	while (1)
 	{
@@ -114,6 +128,7 @@ void main(){
 
 		if (_method == "ftp")
 		{
+			_number = 1;
 			string _stationcode = "";
 			cout << "FTP call" << endl;
 			cout << "Station Code" << endl;
@@ -126,11 +141,13 @@ void main(){
 		}
 		else if (_method == "local")
 		{
+			_number = 2;
 			cout << "With path you can enter your path to the file." << endl << "With icao you can directly enter the ICAO-code and the file will be opened." << endl << "With search you can search for a specific airport" << endl;
 			cin >> _option;
 			transform(_option.begin(), _option.end(), _option.begin(), ::tolower);
 			if (_option == "path")
 			{
+				cin.ignore();
 				cin >> path;
 				_decode->setlocalpath(path);
 			}
@@ -150,7 +167,7 @@ void main(){
 			else if (_option == "search")
 			{
 				cin.ignore();
-				_decode->search_icoa_code();
+				_decode->search_icoa_code(_number);
 			}
 
 			cout << "Result in main(): " << _decode->getlocal_file();
@@ -164,7 +181,7 @@ void main(){
 			cout << "Wrong Input" << endl;
 		}
 		
-
+		_number = 0;
 		
 	}
 
@@ -182,15 +199,13 @@ string DecodeTAF::callFromFTP(string stationcode){
 	{
 		ProcFtp = (MYPROC2)GetProcAddress(fptLib, "openFtpTAF");
 
-		// If the function address is valid, call the function.
-
+		
 		if (NULL != ProcFtp)
 		{
 			char *station = const_cast<char*>(stationcode.c_str());;
 			fRunTimeLinkSuccess = TRUE;
 			report = string((ProcFtp)(station,reportData));
 		}
-		// Free the DLL module.
 
 		fFreeResult = FreeLibrary(fptLib);
 	}

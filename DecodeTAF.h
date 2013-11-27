@@ -12,7 +12,7 @@ public:
 	//Main changes
 	DecodeTAF(void);
 	~DecodeTAF(void);
-	void search_icoa_code();
+	void search_icoa_code(int);
 	void setlocalpath(string);
 	void setftppath(string);
 	string getlocalpath();
