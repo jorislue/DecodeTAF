@@ -91,7 +91,7 @@ void DecodeTAF::search_icoa_code(int _variation)
 	{
 		if (_variation == 1)
 		{
-			cout << callFromFTP(_city);
+			callFromFTP(_codes[number]);
 		}
 		else if (_variation == 2)
 		{
@@ -112,7 +112,6 @@ void main(){
 	string _method = "";
 	DecodeTAF* _decode = new DecodeTAF();
 	string _input;
-	string in;
 	string path;
 	string _option = "";
 	int _number;
@@ -129,20 +128,42 @@ void main(){
 		if (_method == "ftp")
 		{
 			_number = 1;
-			string _stationcode = "";
+			cout << "FTP:" <<endl <<"With icao you can directly enter the ICAO-code and the file will be opened." << endl << "With search you can search for a specific airport" << endl;
+			cin >> _option;
+			transform(_option.begin(), _option.end(), _option.begin(), ::tolower);
+			
+			/*string _stationcode = "";
 			cout << "FTP call" << endl;
 			cout << "Station Code" << endl;
 			cin >> _stationcode;
 			string test = _decode->callFromFTP(_stationcode);
 			cout << "\nRaw report:\n\n";
 			cout << test;
-			cout << "\n\n";
+			cout << "\n\n";*/
+			if (_option == "icao")
+			{
+				cin.ignore();
+				cout << "File name: e.g LOWS" << endl;
+				while (cin >> icao && icao.length() != 4)
+				{
+					cout << "Eingabe hat keine 4 zeichen! " << endl;
+					cin.clear();
+					cin.ignore();
+				}
+
+				_decode->callFromFTP(icao);
+			}
+			else if (_option == "search")
+			{
+				cin.ignore();
+				_decode->search_icoa_code(_number);
+			}
 		
 		}
 		else if (_method == "local")
 		{
 			_number = 2;
-			cout << "With localpath you can enter your path to the local files." << endl << "With icao you can directly enter the ICAO-code and the file will be opened." << endl << "With search you can search for a specific airport" << endl;
+			cout << "Local:"<<endl<<"With localpath you can enter your path to the local files." << endl << "With icao you can directly enter the ICAO-code and the file will be opened." << endl << "With search you can search for a specific airport" << endl;
 			cin >> _option;
 			transform(_option.begin(), _option.end(), _option.begin(), ::tolower);
 			if (_option == "localpath")
@@ -172,8 +193,6 @@ void main(){
 
 			cout << "Result in main(): " << _decode->getlocal_file();
 		
-
-			cout << "Download latest forecast via FTP? (default)" << endl;
 			
 		}
 		else
@@ -182,7 +201,8 @@ void main(){
 		}
 		
 		_number = 0;
-		
+		_option = "";
+		_method = "";
 	}
 
 	system("pause");
@@ -258,9 +278,16 @@ void DecodeTAF::callFromLocalFile(string file){
 			this->localfile = ((ProcAdd)(_localpath,result));
 		}
 		// Free the DLL module.
-		this->_localfile = this->localfile;
-		cout << "Result of dll: "<<this->localfile << endl;
-		this->setlocal_file(this->_localfile);
+		if (this->localfile != "")
+		{
+
+			this->_localfile = this->localfile;
+			cout << "Result of dll: " << this->localfile << endl;
+			this->setlocal_file(this->_localfile);
+		}
+		else
+			this->setlocal_file("");
+
 		fFreeResult = FreeLibrary(hinstLib);
 	}
 
@@ -269,6 +296,5 @@ void DecodeTAF::callFromLocalFile(string file){
 	if (!fRunTimeLinkSuccess)
 		printf("Message printed from executable\n");
 
-	cout << "DecodeTAF Console Application" << endl;
 	
 }
