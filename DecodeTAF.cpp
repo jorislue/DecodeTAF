@@ -142,10 +142,10 @@ void main(){
 		else if (_method == "local")
 		{
 			_number = 2;
-			cout << "With path you can enter your path to the file." << endl << "With icao you can directly enter the ICAO-code and the file will be opened." << endl << "With search you can search for a specific airport" << endl;
+			cout << "With localpath you can enter your path to the local files." << endl << "With icao you can directly enter the ICAO-code and the file will be opened." << endl << "With search you can search for a specific airport" << endl;
 			cin >> _option;
 			transform(_option.begin(), _option.end(), _option.begin(), ::tolower);
-			if (_option == "path")
+			if (_option == "localpath")
 			{
 				cin.ignore();
 				cin >> path;
