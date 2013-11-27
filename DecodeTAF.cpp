@@ -9,6 +9,7 @@ typedef char*(__cdecl *MYPROC)(char*);
 typedef char* (__cdecl *MYPROC2)(char*,char*);
 static char reportData[150];
 
+
 DecodeTAF::DecodeTAF(void)
 {
 	this->localpath = "C:/Users/Christopher/Downloads/";
@@ -77,7 +78,7 @@ void DecodeTAF::search_icoa_code()
 	cout << "Inhalt: " << _codes[number] << endl;
 	callFromLocalFile(_codes[number]);
 }
-string callFromFTP(string stationcode);
+
 
 
 
@@ -101,8 +102,11 @@ void main(){
 		cin.ignore();
 		if (_method == "ftp")
 		{
-		
+			string _stationcode = "";
 			cout << "FTP call" << endl;
+			cout << "Station Code" << endl;
+			cin >> _stationcode;
+			string test = _decode->callFromFTP(_stationcode);
 		
 		}
 		else if (_method == "local")
