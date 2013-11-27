@@ -209,6 +209,7 @@ string DecodeTAF::callFromFTP(string stationcode){
 
 		fFreeResult = FreeLibrary(fptLib);
 	}
+	cout << "In callfromftp: " << report;
 	return report;
 
 }
