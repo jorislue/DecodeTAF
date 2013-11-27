@@ -2,6 +2,7 @@
 //#define _CRT_SECURE_NO_WARNINGS
 #include <windows.h>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <curl.h>
 using namespace std;
@@ -68,19 +69,10 @@ extern "C" {          // we need to export the C interface
 			//cout << result;
 		//	char* cResult = const_cast<char*>(result.c_str());
 			int i = 0;
-			cout << "\nreal output:\n";
-			cout << result;
-			cout << "\n";
-			char* test;
-			test= static_cast<char*>(result.c_str);
-			for (i = 0; i++; test[i] != '/0')
-				cout << test[i];
-			cout << test;
-			cout << "before return:\n";
-			cout << destination;
-			cout << "\n";
-			cout << "After return: \n";
+			for (int k = 0; k < result.length(); k++)
+				destination[k] = result[k];
 			return destination;
+
 	}
 
 

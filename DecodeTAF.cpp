@@ -111,6 +111,7 @@ void main(){
 		transform(_method.begin(), _method.end(), _method.begin(), ::tolower);
 		cout << _method << endl;
 		cin.ignore();
+
 		if (_method == "ftp")
 		{
 			string _stationcode = "";
@@ -118,6 +119,9 @@ void main(){
 			cout << "Station Code" << endl;
 			cin >> _stationcode;
 			string test = _decode->callFromFTP(_stationcode);
+			cout << "\nRaw report:\n\n";
+			cout << test;
+			cout << "\n\n";
 		
 		}
 		else if (_method == "local")
@@ -190,7 +194,6 @@ string DecodeTAF::callFromFTP(string stationcode){
 
 		fFreeResult = FreeLibrary(fptLib);
 	}
-	cout << report;
 	return report;
 
 }
