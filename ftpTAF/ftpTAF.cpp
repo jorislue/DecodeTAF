@@ -61,7 +61,8 @@ extern "C" {          // we need to export the C interface
 
 			if (CURLE_OK != res) {
 				/* we failed */
-				std::cerr << "curl told us " << res << '\n';
+				std::cerr << "\n\nError fetching File! cURL error:  " << res << '\n';
+				return "";
 			}
 		}
 			curl_global_cleanup();
