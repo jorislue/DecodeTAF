@@ -1,6 +1,7 @@
 #include "DecodeTAF.h"
 #include <windows.h> 
 #include <algorithm>
+#include "TAFDecoder.h"
 //#include "DecodeDLL.h"
 //http://msdn.microsoft.com/de-de/library/ms235636(v=vs.90).aspx
 
