@@ -1,9 +1,7 @@
 #include "DecodeTAF.h"
 #include <windows.h> 
 #include <algorithm>
-//#include "TAFDecoder.h"
-//#include "DecodeDLL.h"
-//http://msdn.microsoft.com/de-de/library/ms235636(v=vs.90).aspx
+#include "TAFDecoder.h"
 
 //Declaration of DLL-Functions
 typedef char*(__cdecl *MYPROC)(char*,char*);
@@ -157,11 +155,15 @@ void main(){
 					cin.ignore();
 				}
 				_decode->callFromFTP(icao);
+				if (_decode->getlocal_file()!="")
+				cout << TAFDecoding::TheTAFDecoder::decode(_decode->getlocal_file(), "   ") << endl;
 			}
 			else if (_option == "search")
 			{
 				cin.ignore();
 				_decode->search_icoa_code(_number);
+				if (_decode->getlocal_file() != "")
+				cout<<TAFDecoding::TheTAFDecoder::decode(_decode->getlocal_file(), "   ")<<endl;
 			}
 			else
 			{
@@ -194,11 +196,15 @@ void main(){
 				}
 				cout << "\n";
 				_decode->callFromLocalFile(icao);
+				if (_decode->getlocal_file() != "")
+				cout << TAFDecoding::TheTAFDecoder::decode(_decode->getlocal_file(), "   ") << endl;
 			}
 			else if (_option == "search")
 			{
 				cin.ignore();
 				_decode->search_icoa_code(_number);
+				if (_decode->getlocal_file() != "")
+				cout << TAFDecoding::TheTAFDecoder::decode(_decode->getlocal_file(), "   ") << endl;
 			}
 			else
 			{
@@ -222,7 +228,7 @@ void main(){
 
 
 //Loads the DLL for the FTP call, stationcode -> ICAO-Code
-string DecodeTAF::callFromFTP(string stationcode){
+void DecodeTAF::callFromFTP(string stationcode){
 
 	MYPROC2 ProcFtp;
 	string report;
@@ -241,7 +247,7 @@ string DecodeTAF::callFromFTP(string stationcode){
 
 		fFreeResult = FreeLibrary(fptLib);
 	}
-	return report;
+	this->setlocal_file(report);
 
 }
 //Loads the DLL for the local call, file -> ICAO-Code

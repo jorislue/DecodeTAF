@@ -39,6 +39,11 @@ extern "C" {          // we need to export the C interface
 		char* carrDestURL = const_cast<char*>(destURL.c_str());
 		CURL *curl;
 		CURLcode res;
+		
+		for (int i = 0; i < 150; i++)
+		{
+			destination[i] = NULL;
+		}
 
 		curl_global_init(CURL_GLOBAL_DEFAULT);
 
@@ -52,7 +57,7 @@ extern "C" {          // we need to export the C interface
 
 			/* Switch on full protocol/debug output */
 			//curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-			cout << "fetching weather data, please wait...";
+			cout << "fetching weather data, please wait...\n"<<endl;
 			res = curl_easy_perform(curl);
 			//cout << res;
 

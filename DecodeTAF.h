@@ -18,7 +18,7 @@ public:
 	string getlocalpath();
 	string getftppath();
 	void callFromLocalFile(string);
-	string callFromFTP(string);
+	void callFromFTP(string);
 	void setlocal_file(string);
 	string getlocal_file();
 private:
